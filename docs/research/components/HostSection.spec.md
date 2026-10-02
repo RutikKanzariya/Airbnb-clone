@@ -3,9 +3,9 @@
 ## Overview
 - **Target file:** `src/components/listing/HostSection.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/host-1440.png`
-- `docs/design-references/sections/host-390.png`
-- **Interaction model:** static
+- `docs/design-references/sections/host-section-desktop.png`
+- `docs/design-references/sections/host-section-mobile.png`
+- **Interaction model:** mostly static host details with a message-host dialog trigger
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
 ## Behaviors, states & specifics
@@ -14,6 +14,11 @@
 - Host card: 1px card-border, radius 20, shadow-card, grid `1fr 100px`, padding 30px 24px. Avatar `IMG/aa4e82a4.jpg` 88px circle + 28px rausch verified badge (2px white border, bottom 4 right 0) with white check SVG. Name 26px medium ("Mirashya<br>Homes" wraps naturally in the column), "Host" 13px mt 4. Right stats column: left border #ebebeb, padding-left 20: three rows (padding 10px 0, separators #ebebeb): "1,463"/Reviews, "4.68★"/Rating, "2"/Years hosting — values 20px medium, labels 12px.
 - Facts under the card (mt 22, gap 14): 24px icons + 15px text: "Born in the 80s", "Where I went to school: NICMAR GOA".
 - Right column: "Co-Hosts" 18px medium mb 16; 3-col grid (gap 16px 8px, mb 30) of 34px avatars + 14px names (initial circles for Shruti / Amisha with inline colours from markup). "Host details" 18px medium mb 16; "Response rate: 100%" / "Responds within an hour" 15px/1.6. "Message host" button grey200, radius 8, padding 14px 24px, 15px medium, mt 18, hover grey300. Safety note row: 24px shield icon, 12px muted2 text, mt 30.
+
+## Current clone additions
+
+- "Message host" opens `HostMessageModal`, which validates and saves demo messages in this browser's local storage. It explicitly tells the visitor that the message is not delivered; details are in [`HostMessageModal.spec.md`](HostMessageModal.spec.md).
+- Closing the message dialog returns focus to the button that opened it.
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
@@ -28,7 +33,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

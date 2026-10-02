@@ -64,5 +64,23 @@ The agent declined to write made-up prompts and wrote this log from the real con
 | Agent | Config | Runs | Result |
 |---|---|---|---|
 | section-builder | `.claude/agents/section-builder.md` | 8 in parallel (18 components) | All passed `tsc` and ESLint; page assembled |
-| code-reviewer | `.claude/agents/code-reviewer.md` | 1 | *pending* |
-| visual-qa | `.claude/agents/visual-qa.md` | 1 | *pending* |
+| code-reviewer | `.claude/agents/code-reviewer.md` | 1 | Findings and their resolutions are recorded in `docs/reviews/code-review.md` |
+| visual-qa | `.claude/agents/visual-qa.md` | 1 | Visual and interaction QA was run during the original build; no standalone report is retained in the current `docs/reviews/` directory |
+
+## Follow-up feature work
+
+The initial prompt log above records the original build conversation. After that build, the user requested the following additions and refinements. This is a chronological summary of those real follow-up requests, not a transcript or invented prompt set.
+
+1. **Run and brand the app:** use port 5000, remove the Next.js development badge, set the supplied WebP as the tab icon, and make the displayed logo round.
+2. **Build interactive search:** make the header search expandable; add suggested destinations, date and guest pickers, panel toggling, and a working Search action. Fix the expanded search layout so its icon and label do not overlap.
+3. **Add header navigation dialogs:** make the hamburger menu one line where requested, add the menu actions and language/currency interface, and provide the compact login/sign-up dialog from the account control.
+4. **Complete listing photo interactions:** open listing, bedroom, living-room, and nearby-stay photos in a larger navigable viewer.
+5. **Complete the booking prototype:** support editable dates and guest counts, update the estimate, connect both Reserve buttons to the review/confirmation flow, and add the surprise offer claim interaction.
+6. **Add host messaging:** provide a message composer with an explicit local-only demo status because message delivery is not configured.
+7. **Document the project:** update the README with the implemented features and limitations, package author/description metadata, project structure, and architecture. This follow-up documentation pass adds current-implementation notes and component specs so the research set reflects the features added since the original capture.
+
+## Provenance and scope
+
+- The prompt sequence in sections 1–5 is the original build history; the follow-up list above summarizes later work.
+- `docs/research/components/` contains measured reference specifications as well as current clone additions. The research index identifies which is which and links to the feature specs.
+- The prototype remains front-end only. Search, reservation, host messaging, authentication, and offer redemption are not connected to live services.

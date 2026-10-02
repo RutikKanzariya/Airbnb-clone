@@ -3,8 +3,8 @@
 ## Overview
 - **Target file:** `src/components/listing/Lightbox.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/lightbox-1440.png`
-- `docs/design-references/sections/lightbox-390.png`
+- `docs/design-references/sections/photo-lightbox-desktop.png`
+- `docs/design-references/sections/photo-lightbox-mobile.png`
 - **Interaction model:** click-driven overlay (+ keyboard arrows)
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -13,6 +13,12 @@
 - Header (absolute top, 72px, padding 0 24px, z 3): left grid button (GridDotsIcon, 40px ghost round, margin-left -8px, aria-label "Show all photos") → `closeLightbox()` (returns to the tour underneath). Centre title (16px medium, absolute centred) = the photo's room name (`ALL_TOUR_PHOTOS[i].room`). Right group gap 12: counter "{i+1} / 43" (14px) and Close button (CloseIcon) → `closeLightbox()`.
 - Stage `._VPKRNC`: full size, padding 88px 96px (≤743px: 80px 12px), flex centre; the image is `max-width:100%; max-height:100%; object-fit:contain` of `ALL_TOUR_PHOTOS[i].src`.
 - Prev/next: 40px round buttons with 1px #222 border, white, absolute vertically centred at left 20 / right 20, z 3, 18px ChevronLeftStrokeIcon/ChevronRightStrokeIcon strokeWidth 4; hover grey100; active `translateY(-50%) scale(.92)`; disabled at the ends (opacity .28, border #ccc, no hover). ArrowLeft/ArrowRight keys navigate while open.
+
+## Current clone additions
+
+- The provider can open the lightbox with either the original photo-tour list or a caller-supplied photo list. The second mode is used by the nearby-stays carousel; bedroom and living-room cards map into the listing photo set.
+- The counter and title use the active photo set. Previous/next controls and left/right arrow keys navigate within that set and stop at its bounds.
+- The overlay supports closing and focus return as described by [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md).
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
@@ -27,7 +33,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

@@ -1,5 +1,7 @@
 # Behaviors: https://airbnb-clone-umber-two.vercel.app/
 
+> This file records observations from the captured reference, not a complete list of the clone's current interactions. Use [the research index](README.md) and its current-implementation specs for behavior added to this project after the initial reconstruction.
+
 **Method caveat:** the live page could not be driven by a browser (Vercel Security Checkpoint rejects automated browsers). Everything below comes from the user's SingleFile captures. Their CSS keeps every transition, hover, active and media rule, but SingleFile removed the JavaScript and any CSS rules not in use at save time. So:
 - **Measured** = read directly from the captured CSS or DOM.
 - **Inferred** = reconstructed from a hidden-state rule plus markup ids, because the "open" rule or the JS was stripped.
@@ -33,3 +35,15 @@
 - Reserve: gradient → darker gradient, active scale(.985).
 - Tour thumbnails: scale(1.04) and brightness(.94). Tour photos: scale(1.04) over .4s plus a `#00000014` overlay.
 - Lightbox arrows: grey100 background, active `translateY(-50%) scale(.92)`.
+
+## Current clone additions
+
+The following behaviors are implemented in this project and were added beyond what could be observed in the static reference captures. They describe this clone, not claims about Airbnb's live product:
+
+- **Header search:** destination suggestions, a two-month date picker with flexible-date choices, and guest counters. Search writes destination, check-in/check-out, guest counts, and flexible-date selection to the current URL query string.
+- **Header menu and account dialogs:** the hamburger menu opens the language/currency preferences dialog, demo menu actions, and login entry point. The globe/account control opens the compact login dialog. Authentication is not connected.
+- **Booking card:** date fields and adult/child/infant/pet counters update the displayed stay length and estimate. Reserve from the card or sticky navigation opens a review and local confirmation; no availability lookup, reservation, or payment is performed.
+- **Offer claim:** the surprise offer reveals and claims the `STAY10` demo code. It is not validated or redeemable by a booking service.
+- **Host message:** the message dialog saves submitted text to this browser's `localStorage`; it does not deliver the message.
+- **Photo viewing:** the lightbox is also used for bedroom/living-room photos and nearby-stay images, with previous/next and keyboard-arrow navigation.
+- **Shared dialogs:** photo, amenity, account, language/currency, message, offer, and reservation dialogs support their implemented close, keyboard, and focus behaviors as documented in the individual specs.

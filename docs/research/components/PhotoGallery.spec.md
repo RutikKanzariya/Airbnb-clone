@@ -3,8 +3,8 @@
 ## Overview
 - **Target file:** `src/components/listing/PhotoGallery.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/gallery-1440.png`
-- `docs/design-references/sections/gallery-390.png`
+- `docs/design-references/sections/photo-gallery-desktop.png`
+- `docs/design-references/sections/photo-gallery-mobile.png`
 - **Interaction model:** click-driven (opens photo tour)
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -14,6 +14,11 @@
 - Each tile is a button (aria-label "Romantic Jacuzzi 1BHK Candolim | Mirashya UG10 image N") with a hover darkening overlay (::after transparent → #0000001a, .2s ease) and active scale(.997). Clicking tile N → `openTour()`.
 - "Show all photos" button absolute right 24 bottom 24, white, 1px #222 border, radius 8, padding 7px 15px, 12px/16px medium, shadow 0 2px 8px #00000026, GridDotsIcon 15px; hover grey100, active scale(.96). Click → `openTour()`.
 - ≤743px: grid becomes a single column, `grid-template-rows: 280px; height: 280px`, only the first tile is shown.
+
+## Current clone additions
+
+- Hero tiles and "Show all photos" open the photo-tour overlay. The tour is deep-linkable with `?modal=PHOTO_TOUR_SCROLLABLE`.
+- Room-card and nearby-stay image buttons use the lightbox separately; they do not change the hero gallery's photo-tour entry behavior.
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
@@ -28,7 +33,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

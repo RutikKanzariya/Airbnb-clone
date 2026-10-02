@@ -3,8 +3,8 @@
 ## Overview
 - **Target file:** `src/components/listing/ThingsToKnow.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/things-1440.png`
-- `docs/design-references/sections/things-390.png`
+- `docs/design-references/sections/things-to-know-desktop.png`
+- `docs/design-references/sections/things-to-know-mobile.png`
 - **Interaction model:** static
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -25,7 +25,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

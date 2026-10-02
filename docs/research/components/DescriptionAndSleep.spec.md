@@ -3,9 +3,9 @@
 ## Overview
 - **Target file:** `src/components/listing/DescriptionAndSleep.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/left-1440.png`
-- `docs/design-references/sections/left-390.png`
-- **Interaction model:** click-driven (Show more toggles the description)
+- `docs/design-references/sections/listing-details-column-desktop.png`
+- `docs/design-references/sections/listing-details-column-mobile.png`
+- **Interaction model:** click-driven (Show more/less and room-photo lightbox)
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
 ## Behaviors, states & specifics
@@ -14,6 +14,11 @@
 - Description paragraph 16px/1.5, `white-space: pre-line`; collapsed state: `max-height: 6.2em; overflow: hidden; mask-image: linear-gradient(#000 62%, transparent)` (use `[mask-image:linear-gradient(#000_62%,transparent)]`).
 - "Show more" button (16px medium underlined, underline-offset 3px, 14px chevron) — **inferred behavior:** toggles the paragraph to fully expanded (no max-height, no mask) and the label to "Show less".
 - "Where you'll sleep" (`._QZaLue` = padding 32px 0 + top border #ebebeb): h2 22px/26px medium mb 24; two cards in a 2-col grid gap 16; image aspect 3/2, radius 8, 1px card-border; title 15px medium mt 14; sub 14px muted2. Images `IMG/967e6ad6.jpg`, `IMG/42cd77d9.jpg`. ≤743px → 1 column.
+
+## Current clone additions
+
+- The bedroom and living-room images are keyboard-operable buttons that open the corresponding photo in the shared listing lightbox.
+- The description toggle exposes `aria-expanded` and `aria-controls` for the description content.
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
@@ -28,7 +33,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

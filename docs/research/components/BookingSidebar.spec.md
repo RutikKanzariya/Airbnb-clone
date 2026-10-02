@@ -3,7 +3,7 @@
 ## Overview
 - **Target file:** `src/components/listing/BookingSidebar.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/aside-1440.png`
+- `docs/design-references/sections/booking-sidebar-desktop.png`
 - **Interaction model:** scroll (CSS sticky), editable booking dates/guests, and reservation confirmation
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -18,6 +18,13 @@
 - Reserve opens a review dialog with the selected dates, guest count, and total. Confirming shows a reservation confirmation; the demo does not process a payment.
 - Report row (mt 26, centred, gap 8, muted2 14px): 16px flag icon (inline SVG from markup) + underlined link "Report this listing".
 
+## Current clone additions
+
+- The four guest counters support adults, children, infants, and pets. Adults and children contribute to the displayed guest total.
+- Check-in and checkout are editable date inputs. The nightly estimate, number of nights, and free-cancellation date recalculate from the selected range.
+- Claim opens a surprise-offer dialog. Claiming marks the control as claimed and displays the 10% demo code `STAY10`; the code is not redeemed by a service.
+- The booking-card Reserve control opens the local reservation review. The sticky-nav Reserve action requests the same review through `ListingUIProvider`. The review can be confirmed locally, but does not check availability, make a booking, or charge a payment.
+
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
 - Site tokens available as Tailwind colors: `ink` #222222, `subtle` #6a6a6a, `muted2` #717171, `line` #dddddd, `line-soft` #ebebeb, `card-border` rgba(0,0,0,.08), `rausch` #ff385c, `grey100` #f7f7f7, `grey200` #f2f2f2, `grey300` #ebebeb; shadows `shadow-card` (0 6px 16px rgba(0,0,0,.12)); utilities `bg-reserve` / `hover:bg-reserve-hover` (Reserve gradient) and `no-scrollbar`. CSS `var(--x)` in the source maps to these.
@@ -31,7 +38,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

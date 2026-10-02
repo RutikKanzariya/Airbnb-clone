@@ -3,8 +3,8 @@
 ## Overview
 - **Target file:** `src/components/listing/SiteHeader.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/header-1440.png`
-- `docs/design-references/sections/header-390.png`
+- `docs/design-references/sections/site-header-desktop.png`
+- `docs/design-references/sections/site-header-mobile.png`
 - **Interaction model:** destination, date, and guest search panels plus hover states
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -22,6 +22,14 @@
 - Skip link: `<a href="#main" class>` "Skip to content" positioned absolute left:-999px, becomes left:0 on focus (see `._DLLasj`). Render it as the first child of the header component.
 - The search pill has no hover animation; its panel and selected segment change only on click. "Become a host" gets grey100 on hover; circle buttons grey200 → grey300 (.18s).
 
+## Current clone additions
+
+- The destination panel presents the suggested destinations and supports filtering the list. Selecting a place updates the search summary; clicking the active "Anywhere" control again closes its panel.
+- The date panel offers a two-month calendar, range selection, month navigation, flexible-date choices, and a clear action. The guest panel adjusts adults, children, infants, and pets.
+- Search writes the selected `where`, `checkin`, `checkout`, guest counts, and optional `flexible` value to the current URL, then closes the search controls and reports the action.
+- The hamburger menu opens Language & currency, Help Centre, hosting, referral/co-host, and login actions. Language/currency and login open their own dialogs; menu actions without a connected destination show demo feedback.
+- Both the globe/account control and menu login action open `LoginModal`. Provider sign-in controls are not connected to Google, Apple, or an identity backend.
+
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
 - Site tokens available as Tailwind colors: `ink` #222222, `subtle` #6a6a6a, `muted2` #717171, `line` #dddddd, `line-soft` #ebebeb, `card-border` rgba(0,0,0,.08), `rausch` #ff385c, `grey100` #f7f7f7, `grey200` #f2f2f2, `grey300` #ebebeb; shadows `shadow-card` (0 6px 16px rgba(0,0,0,.12)); utilities `bg-reserve` / `hover:bg-reserve-hover` (Reserve gradient) and `no-scrollbar`. CSS `var(--x)` in the source maps to these.
@@ -35,7 +43,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

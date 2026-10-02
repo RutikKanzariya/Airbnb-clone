@@ -1,6 +1,6 @@
 // Visual QA — screenshot the running clone and exercise its overlays.
 // Usage: QA_URL=http://localhost:5000/ node tools/qa.js [tag]
-// Writes <tag>-1440.png, <tag>-390.png (full page) and <tag>-sticky/-tour/-lightbox/-amenities.png
+// Writes <tag>-1440.png, <tag>-390.png (full page) and <tag>-sticky/-tour/-lightbox/-amenities-modal-mobile.png
 // into tools/.out/, logging page height and any console errors. Compare with: python tools/diff.py <tag>
 const path = require('path');
 const { launch, OUT } = require('./config');

@@ -1,65 +1,41 @@
-# Code review: `code-reviewer` sub-agent report
+# Code review: original implementation report
 
-- **Config:** `.claude/agents/code-reviewer.md`
-- **Run:** once over `src/`, before the accessibility pass. The report is reproduced below. The resolution of each finding is in the table at the end.
+## Scope and context
 
----
+- **Reviewer:** `code-reviewer` sub-agent, configured in `.claude/agents/code-reviewer.md`.
+- **Review scope:** one review of `src/` before the accessibility pass and before later search, booking, login, language/currency, and host-message features were added.
+- **Interpretation:** findings below describe that review snapshot. This report records the review and its follow-up resolutions; it is not a fresh audit of the current application.
 
-**Health:** `npm run typecheck` and `npx eslint src` are clean. `npm run lint` fails with 24 `@typescript-eslint/no-require-imports` errors, all in `tools/*.js` and none in `src/`.
+## Verification recorded at review time
 
-## High
-- **`globals.css` `:focus { outline: none }` removes every focus indicator,** and no component adds `focus-visible:` styles, so keyboard users can't see focus.
-  - Fix: add a global `:focus-visible { outline: 2px solid #222; outline-offset: 2px }`, with an inset offset on rounded, clipped tiles.
-  - Pixel-safe: `:focus-visible` doesn't match mouse clicks.
-- **`AvailabilityCalendar.tsx` day cells are `<div onClick>`.** They aren't keyboard-reachable, have no role, and don't expose their state.
-  - Fix: render them as `<button>`s with reset classes, `disabled={blocked}`, `aria-pressed` and a descriptive `aria-label`. Group each month with `role="group"`.
-- **The dialogs (`PhotoTourModal`, `Lightbox`, `AmenitiesModal`) don't manage focus.** They don't move focus in, trap Tab, or return focus to the trigger. The page behind stays tabbable, so `aria-modal` isn't honoured.
-  - Fix: add a shared `useDialogFocus` hook and make the background `inert` while an overlay is open (the tour too, while the lightbox is open).
+- `npm run typecheck` passed.
+- `npx eslint src` passed.
+- At first, `npm run lint` reported 24 `@typescript-eslint/no-require-imports` errors in `tools/*.js`, not in `src/`. An ESLint override for the CommonJS tool scripts was recorded as the fix. The original report did not record a post-fix rerun of `npm run lint`.
 
-## Medium
-- Closed dialogs rely on `aria-hidden` plus `invisible`. Add `inert={!open}`.
-- Description Show more/less has no `aria-expanded` or `aria-controls`.
-- The tour's Save toggle lacks `aria-pressed`.
-- JS `behavior: "smooth"` scrolling ignores `prefers-reduced-motion`. Add a `scrollBehavior()` helper.
-- The reduced-motion rule targets `*`, which doesn't match `::before`/`::after`, so it misses the hover overlays.
-- Tailwind v4 `scale-*` and `translate-*` in `ListingTitle`, `PhotoGallery`, `BookingSidebar`, `AmenitiesPreview` and `AmenitiesModal` set separate properties that `transition: transform` doesn't animate. Use `[transform:…]`.
-- `share()` shows "Link copied" even if the clipboard write fails.
+## Findings and outcomes
 
-## Low
-- A repeated identical toast isn't re-announced by the live region.
-- The toast timer isn't cleared on unmount.
-- The title's Save button changes its label while also using `aria-pressed`.
-- The sticky nav's active link has no `aria-current`.
-- The hidden sticky nav can keep focus. Use `inert`.
-- The rating bars have no text alternative.
-- The decorative SVGs (laurels, wordmark) lack `aria-hidden`.
-- `href="#"` placeholder links jump to the top.
-- Duplicated helpers and icons: `ShieldIcon`, the SVG base props, the ghost-button class strings, and the amenity SVG markup.
+| Severity | Finding from the review | Recorded outcome |
+|---|---|---|
+| High | `globals.css` removed all focus outlines, leaving keyboard focus invisible. | **Resolved:** added a keyboard-only `:focus-visible` outline, with an inset treatment for clipped, rounded tiles. |
+| High | `AvailabilityCalendar.tsx` used clickable `<div>` elements without keyboard operation or exposed state. | **Resolved:** calendar days became buttons with disabled state, `aria-pressed`, descriptive labels, and month groups. |
+| High | `PhotoTourModal`, `Lightbox`, and `AmenitiesModal` did not move, trap, or restore focus, and the background remained interactive. | **Resolved:** added dialog focus handling and inert background content. Trigger elements are recorded before inertness blurs them; the lightbox coordinates with the tour's focus trap. |
+| Medium | Closed dialogs used `aria-hidden` and `invisible` without `inert`. | **Resolved:** closed dialogs and covered page content were made inert, including the tour beneath the lightbox. |
+| Medium | Description Show more/less did not expose expanded state or controlled content. | **Resolved:** added `aria-expanded` and `aria-controls`. |
+| Medium | The photo-tour Save control did not expose pressed state. | **Resolved:** added `aria-pressed`. |
+| Medium | JavaScript smooth scrolling ignored `prefers-reduced-motion`. | **Resolved:** added a shared `scrollBehavior()` helper and used it for the sticky navigation and photo tour. |
+| Medium | Reduced-motion CSS did not include pseudo-elements. | **Resolved:** extended the selector to `*, *::before, *::after`. |
+| Medium | Some Tailwind v4 scale/translate utilities were not covered by `transition: transform`. | **Partially addressed:** the report records fixes in ListingTitle, PhotoGallery, BookingSidebar, and AmenitiesPreview. AmenitiesModal was left unchanged because its transition included `scale` and the reviewer considered `transition-transform` sufficient for `translate`; that rationale was not independently revalidated in this report. |
+| Medium | Share reported success even when clipboard writing failed. | **Resolved:** clipboard failure now produces an error toast. |
+| Low | Repeating the same toast may not trigger a fresh live-region announcement. | **Deferred:** recorded as low impact; repeated identical announcements were not reworked. |
+| Low | The toast timeout was not cleared on unmount. | **Resolved:** the provider clears its timer during cleanup. |
+| Low | Save changed its visible label while also exposing `aria-pressed`. | **Resolved:** the accessible label was made stable (`Save`). |
+| Low | The sticky-nav active link lacked `aria-current`, and the hidden bar could retain focus. | **Resolved:** active-link state and inertness while hidden were added. |
+| Low | Rating bars had no text alternative. | **Resolved:** added an image role and descriptive accessible label. |
+| Low | Decorative laurel and wordmark SVGs were not marked decorative. | **Resolved:** added `aria-hidden`. |
+| Low | Placeholder `href="#"` links could jump the page to the top. | **Retained:** left in place for reference behavior parity; they remain a known limitation of the prototype. |
+| Low | Several SVGs, helpers, and button class strings were duplicated. | **Deferred:** considered a refactoring concern without user-facing impact. |
+| Build/tooling | CommonJS scripts in `tools/*.js` triggered lint's `no-require-imports` rule. | **Resolved in configuration:** added an ESLint override for the tool scripts; a post-fix full lint result was not captured in the original report. |
 
-**Verdict:** correct and type-safe, but not yet keyboard-accessible. The focus indicator, the calendar buttons and dialog focus management must be fixed first, and all can be fixed without changing the mouse-user rendering.
+## Review conclusion
 
----
-
-## Resolution
-
-| Finding | Status |
-|---|---|
-| `tools/*.js` lint errors | Fixed: ESLint override for the CommonJS tool scripts |
-| No focus indicator | Fixed: global `:focus-visible` outline in `globals.css` (keyboard only) |
-| Calendar days are divs | Fixed: `<button>`s with reset classes, `disabled`, `aria-pressed`, descriptive `aria-label`; months in `role="group"` |
-| Dialog focus management | Fixed with an adjusted approach. The suggested hook recorded the trigger in an effect, but by then the new `inert` background has already blurred it. `ListingUIProvider` now records the trigger in the `open*` handlers and restores it on close. `src/hooks/useDialogFocus.ts` handles initial focus and the Tab trap (the tour's trap pauses while the lightbox is on top). |
-| Background / closed dialogs not inert | Fixed: `PageContent` wrapper is `inert` while any overlay is open; every dialog is `inert` when closed; the tour is `inert` under the lightbox |
-| Show more `aria-expanded` | Fixed |
-| Tour Save `aria-pressed` | Fixed |
-| Smooth scroll ignores reduced motion | Fixed: `scrollBehavior()` in `lib/utils.ts`, used by StickyNav and the tour |
-| Reduced-motion misses pseudo-elements | Fixed: `*, *::before, *::after` |
-| `scale-*` press animations don't ease | Fixed in ListingTitle, PhotoGallery, BookingSidebar, AmenitiesPreview. AmenitiesModal left as is: its transition lists `scale`, and Tailwind v4's `transition-transform` covers `translate`. |
-| Share toast on clipboard failure | Fixed: shows "Couldn't copy link" |
-| Toast timer cleanup | Fixed |
-| Save label + `aria-pressed` | Fixed: stable `aria-label="Save"` |
-| Sticky nav `aria-current` / `inert` when hidden | Fixed |
-| Rating bars text alternative | Fixed: `role="img"` + `aria-label` |
-| Decorative SVGs | Fixed: laurel and wordmark `aria-hidden` |
-| Repeated toast not re-announced | Deferred (low impact) |
-| `href="#"` placeholder links | Kept, since the reference uses `href="#"` too (behavioural parity) |
-| Duplicated icons and helpers | Deferred: refactor only, no user-facing effect |
+The review initially identified keyboard accessibility gaps, especially focus visibility, calendar keyboard operation, and modal focus management. The recorded accessibility pass addressed those high-severity findings. A repeated-toast announcement, placeholder links, and helper duplication were explicitly deferred or retained. Later-added feature flows were outside the scope of this review and are documented separately in [`../research/README.md`](../research/README.md).

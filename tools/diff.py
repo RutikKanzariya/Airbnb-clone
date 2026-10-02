@@ -16,7 +16,11 @@ OUT = os.path.join(HERE, '.out')
 REF = os.path.join(os.path.dirname(HERE), 'docs', 'design-references', 'sections')
 tag = sys.argv[1] if len(sys.argv) > 1 else 'clone'
 
-PAIRS = [('full-1440.png', f'{tag}-1440.png'), ('full-390.png', f'{tag}-390.png'), ('tour-1440.png', f'{tag}-tour.png')]
+PAIRS = [
+    ('full-page-desktop.png', f'{tag}-1440.png'),
+    ('full-page-mobile.png', f'{tag}-390.png'),
+    ('photo-tour-desktop.png', f'{tag}-tour.png'),
+]
 
 for ref_name, clone_name in PAIRS:
     a = Image.open(os.path.join(REF, ref_name)).convert('RGB')

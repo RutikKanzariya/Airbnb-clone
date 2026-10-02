@@ -72,7 +72,7 @@ COMMON = f"""## Conversion rules (apply to every element)
 """
 
 NOTES = {
- 'SiteHeader': dict(model='static (hover states only)', shots=['header-1440.png', 'header-390.png'], notes="""
+ 'SiteHeader': dict(model='static (hover states only)', shots=['site-header-desktop.png', 'site-header-mobile.png'], notes="""
 - `<header>` is in normal flow (position:relative, z-index 50), NOT sticky. Full width with 80px side padding; inner grid `1fr auto 1fr`, height 88px, plus 1px bottom border (#ebebeb) → 89px total.
 - Logo: the Airbnb wordmark SVG (viewBox 0 0 3490 1080) at height 32px, colour rausch via `currentColor`. Link href="#", aria-label "Airbnb homepage".
 - Search pill: first button contains the house image `IMG/e686c455.png` (48x48, margin-left -6px) then "Anywhere". Separators are 1x24 #ddd spans. "Add guests" is muted2 and weight 400.
@@ -81,44 +81,44 @@ NOTES = {
 - Skip link: `<a href="#main" class>` "Skip to content" positioned absolute left:-999px, becomes left:0 on focus (see `._DLLasj`). Render it as the first child of the header component.
 - Hover: pill shadow 0 1px 4px #00000014 → 0 2px 8px #0000001f (.2s ease); "Become a host" gets grey100 bg; circle buttons grey200 → grey300 (.18s).
 """),
- 'StickyNav': dict(model='scroll-driven (window scroll listener)', shots=['stickynav-1440.png'], notes="""
+ 'StickyNav': dict(model='scroll-driven (window scroll listener)', shots=['sticky-navigation-desktop.png'], notes="""
 - Fixed bar (top 0, z-index 45, white, 1px bottom border #ebebeb), hidden by default: `transform: translateY(-100%); opacity:0; pointer-events:none; transition: transform .25s ease, opacity .25s ease`.
 - **Trigger (inferred — original JS was stripped from the save):** visible (`translateY(0); opacity:1; pointer-events:auto`) once `window.scrollY` is past the bottom of the photo gallery (element id `photo-gallery`, i.e. `gallery.getBoundingClientRect().bottom < 0`). Listen to scroll with `{ passive: true }` and also evaluate on mount. Set `aria-hidden` accordingly.
 - Links: Photos → `#photos`, Amenities → `#amenities`, Reviews → `#reviews`, Location → `#location`. Scroll-spy: the active link gets class state `._KOWlKT` (a 2px #222 underline 8px in from each side, 12px from the bottom). Active = the last of those sections whose top is ≤ 80px from the viewport top (fallback Photos). Clicking a link smooth-scrolls to the section (html already has scroll-behavior:smooth); offset so the section top lands just under the 66px bar (call `window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 66, behavior: 'smooth' })` and preventDefault).
 - Right side: price block (right-aligned, 13px/1.2): "₹28,499" (15px medium) + " for 5 nights"; second line: star mask icon 11px (use StarIcon at 11x11, vertical-align -1px) + " 4.95 · 19 reviews". Reserve button: gradient pill, 40px tall, 14px, padding 0 20px, hover → reserve-hover gradient, active scale(.985). Clicking Reserve scrolls to top smoothly (inferred).
 - The whole bar's inner container is max-width 1280px, padding 0 80px, height 66px, flex space-between. No responsive rules apply to it.
 """),
- 'ListingTitle': dict(model='click-driven (Share/Save)', shots=['title-1440.png', 'title-390.png'], notes="""
+ 'ListingTitle': dict(model='click-driven (Share/Save)', shots=['listing-title-desktop.png', 'listing-title-mobile.png'], notes="""
 - `<section id="photos">` — keep this id (StickyNav targets it).
 - h1 26px/30px medium. Share / Save buttons: 16px icons, underlined labels (underline-offset 2px), padding 8px 10px, radius 8px, hover grey200, active scale(.96).
 - Share → `share()` from useListingUI (copies URL, shows "Link copied" toast). Save → `toggleSaved()`; when `saved` is true the heart is filled (HeartIcon filled) and the label reads "Saved" (inferred saved state).
 """),
- 'PhotoGallery': dict(model='click-driven (opens photo tour)', shots=['gallery-1440.png', 'gallery-390.png'], notes="""
+ 'PhotoGallery': dict(model='click-driven (opens photo tour)', shots=['photo-gallery-desktop.png', 'photo-gallery-mobile.png'], notes="""
 - Wrapper `<section id="photo-gallery" aria-label="Photos of this place">` (use id `photo-gallery` — StickyNav reads it), position relative, margin-bottom 48px.
 - Grid: `grid-template-columns: 35fr 17fr 17fr; grid-template-rows: 1fr 1fr; gap 8px; aspect-ratio 1120/494; border-radius 12px; overflow hidden`. First tile spans 2 rows. Images: HERO_PHOTOS from data.ts, object-fit cover, first `loading="eager"`, others lazy.
 - Each tile is a button (aria-label "Romantic Jacuzzi 1BHK Candolim | Mirashya UG10 image N") with a hover darkening overlay (::after transparent → #0000001a, .2s ease) and active scale(.997). Clicking tile N → `openTour()`.
 - "Show all photos" button absolute right 24 bottom 24, white, 1px #222 border, radius 8, padding 7px 15px, 12px/16px medium, shadow 0 2px 8px #00000026, GridDotsIcon 15px; hover grey100, active scale(.96). Click → `openTour()`.
 - ≤743px: grid becomes a single column, `grid-template-rows: 280px; height: 280px`, only the first tile is shown.
 """),
- 'ListingOverview': dict(model='static', shots=['left-1440.png', 'left-390.png'], notes="""
+ 'ListingOverview': dict(model='static', shots=['listing-details-column-desktop.png', 'listing-details-column-mobile.png'], notes="""
 - Four stacked blocks from the left column: summary heading, the Guest favourite card, the host row, the three highlights.
 - Guest favourite card: 1px #ddd border, radius 16, padding 16px 28px, flex gap 22px. Laurel SVGs are 36px tall (second one mirrored with scaleX(-1)); label "Guest<br>favourite" 15px medium, centred, line-height 1.15. Rating 4.95 (20px bold) with 5 × 10px stars; divider 1x34 #ddd; "19" (20px bold) + "Reviews" (13px medium).
 - Host row: avatar `IMG/aa4e82a4.jpg` 46px circle; "Hosted by Mirashya Homes" 16px medium; "2 years hosting" 14px muted2; padding 26px 0.
 - Highlights block `._ZOaIER` has an inline style in the original: `border-top:1px solid #ebebeb; padding-top:32px` → apply as classes.
 """),
- 'DescriptionAndSleep': dict(model='click-driven (Show more toggles the description)', shots=['left-1440.png', 'left-390.png'], notes="""
+ 'DescriptionAndSleep': dict(model='click-driven (Show more toggles the description)', shots=['listing-details-column-desktop.png', 'listing-details-column-mobile.png'], notes="""
 - Description block `._YidPyi` has inline `border-top:1px solid #ebebeb` in the original → apply as class.
 - Translation notice: grey100 box radius 12, padding 16px 18px, "Some info has been automatically translated. " + underlined medium link "Show original" (href="#").
 - Description paragraph 16px/1.5, `white-space: pre-line`; collapsed state: `max-height: 6.2em; overflow: hidden; mask-image: linear-gradient(#000 62%, transparent)` (use `[mask-image:linear-gradient(#000_62%,transparent)]`).
 - "Show more" button (16px medium underlined, underline-offset 3px, 14px chevron) — **inferred behavior:** toggles the paragraph to fully expanded (no max-height, no mask) and the label to "Show less".
 - "Where you'll sleep" (`._QZaLue` = padding 32px 0 + top border #ebebeb): h2 22px/26px medium mb 24; two cards in a 2-col grid gap 16; image aspect 3/2, radius 8, 1px card-border; title 15px medium mt 14; sub 14px muted2. Images `IMG/967e6ad6.jpg`, `IMG/42cd77d9.jpg`. ≤743px → 1 column.
 """),
- 'AmenitiesPreview': dict(model='click-driven (opens amenities modal)', shots=['left-1440.png'], notes="""
+ 'AmenitiesPreview': dict(model='click-driven (opens amenities modal)', shots=['listing-details-column-desktop.png'], notes="""
 - `<div id="amenities">` — keep the id (StickyNav target). Padding 32px 0, top border #ebebeb.
 - 2-col grid (gap 16px 8px, mb 24) of 10 rows: 24px icon + 16px label, gap 16, padding 4px 0. The last two (`._LJqhqA`) are unavailable: colour muted2 and the label has line-through.
 - "Show all 50 amenities" button: 1px #222 border, white, radius 12, padding 13px 23px, 16px medium (line-height normal), hover grey100, active scale(.98). Click → `openAmenities()`.
 """),
- 'AvailabilityCalendar': dict(model='click-driven (month paging + date selection)', shots=['left-1440.png', 'left-390.png'], notes="""
+ 'AvailabilityCalendar': dict(model='click-driven (month paging + date selection)', shots=['listing-details-column-desktop.png', 'listing-details-column-mobile.png'], notes="""
 - Section wrapper `._QZaLue` (padding 32px 0, top border #ebebeb). Heading "5 nights in Candolim" 22px medium; sub "18 Oct 2026 - 23 Oct 2026" 14px muted2, mt 6, mb 22.
 - Two month grids side by side (grid 1fr 1fr, gap 0 56px; ≤743px single column). Month title 16px medium centred mb 18. Weekday row 12px medium. Day cells: `aspect-ratio:1`, 14px, flex-centred, border-radius 50%.
 - Initial state (render exactly this): October 2026 (starts Thursday → 4 empty leading cells) and November 2026 (starts Sunday). Check-in 18 Oct (`._gTtWjP`: #222 circle, white text, with a grey200 half-cell `::before` to the RIGHT at z -1), 19–22 in range (`._lIMKSn`: grey200 bg, square), checkout 23 Oct (`._ifYNOn`: same but half-cell to the LEFT). Blocked days in Nov (`._FXEbnd`: #ddd, line-through): 18–24, 29, 30. Put the day cell in a relatively-positioned container with `isolation:isolate` so the z-index:-1 half-cell stays visible.
@@ -135,42 +135,42 @@ NOTES = {
 - Reserve button full width, 48px, 16px medium, gradient, radius 999, padding 0 24px, mt 2; hover reserve-hover; active scale(.985). "You won't be charged yet" 14px muted2 centred mt 16.
 - Report row (mt 26, centred, gap 8, muted2 14px): 16px flag icon (inline SVG from markup) + underlined link "Report this listing".
 """),
- 'ReviewsSummary': dict(model='static', shots=['reviews-1440.png', 'reviews-390.png'], notes="""
+ 'ReviewsSummary': dict(model='static', shots=['reviews-section-desktop.png', 'reviews-section-mobile.png'], notes="""
 - These are the first two children of `<section id="reviews">` (the section wrapper itself is built by the page assembler; you output a fragment `<>...</>`).
 - Hero: laurel images `IMG/78b66008.png` (left) and `IMG/b6c05494.png` (right) at height 110px, around "4.95" (100px medium, letter-spacing -.03em). "Guest favourite" 22px medium mt 8; description 15px/1.35, max-width 420, centred; "How reviews work" 14px medium underlined button mt 14. Block padding 8px 0 40px, centred.
 - Category grid: `grid-template-columns: 1.4fr repeat(6, 1fr)`, padding 8px 0 40px. Each column padding 0 24px, with a 1px #ddd left border between columns. First column: "Overall rating" + 5 bars (label 12px, 4px track #ebebeb radius 2, #222 fill; widths come from the markup's inline style — copy them). Other columns: label 14px medium mb 12, value 18px medium mb 8, 32px icon (inline SVGs from markup).
 - ≤1128px: grid becomes 2 columns, no left borders, column padding 10px 0.
 """),
- 'ReviewsList': dict(model='click-driven (review "Show more" expands)', shots=['reviews-1440.png', 'reviews-390.png'], notes="""
+ 'ReviewsList': dict(model='click-driven (review "Show more" expands)', shots=['reviews-section-desktop.png', 'reviews-section-mobile.png'], notes="""
 - Fragment of the remaining children of `<section id="reviews">`: tag pill rail, the review grid and the "Show all 19 reviews" button.
 - Pill rail: flex gap 12, overflow-x auto, hidden scrollbar (`no-scrollbar`), padding 4px 0 30px. Pills: 1px #ddd, radius 16, padding 13px 18px 13px 14px, 14px medium, 20x20 icon image, count in muted2 weight 400. Icons `IMG/2db2d4a0.png`, `3cabb880`, `0fa3419b`, `50456be1`, `47f52c81`, `e3f6bded`, `fc465293`, `f3636946`, `91a2c2aa`, `680f6918` (.png) in markup order.
 - Review grid 2 cols, gap 48px 80px, pb 40 (≤1128px: 1 col, gap 30). Card head: 42px avatar (image or initial-letter circle `._VlFmUV` with the inline bg/colour from the markup), name 15px medium, tenure 13px muted2. Rating row 13px: 5 × 10px stars, " · ", date. Body 15px/1.4 pre-line; long reviews are clamped to 4 lines (`line-clamp-4`) with a "Show more" button (15px medium underlined, mt 8) — clicking removes the clamp and hides the button (inferred).
 - "Show all 19 reviews": 1px #222 border, radius 12, padding 13px 23px, 16px medium, hover grey100, active scale(.98) (same style as the amenities button). No action (inert), like the original capture.
 """),
- 'LocationSection': dict(model='static', shots=['location-1440.png', 'location-390.png'], notes="""
+ 'LocationSection': dict(model='static', shots=['location-section-desktop.png', 'location-section-mobile.png'], notes="""
 - `<section id="location">` — the page assembler provides the section wrapper (`padding 48px 0; border-top`), you output the inner fragment (h2, address, map, notes). Keep the h2 text with the curly apostrophe: "Where you’ll be".
 - Map is pure CSS: container 480px tall, radius 12, overflow hidden, bg #e8eef0. Layer `._pLIPHL` = absolutely filled div with background: `radial-gradient(circle at 30% 40%,#cfe3c8 0 6%,transparent 6%), radial-gradient(circle at 70% 60%,#cfe3c8 0 8%,transparent 8%), linear-gradient(115deg,#acd3e6 0 34%,#e9f0e4 34% 100%)`, plus a `::before` grid overlay: `linear-gradient(90deg,rgba(180,180,170,.5) 1px,transparent 1px), linear-gradient(0deg,rgba(180,180,170,.35) 1px,transparent 1px)` at `background-size: 90px 90px` and opacity .5. Use arbitrary `bg-[...]` values (underscores for spaces).
 - Centre pin: 56px #222 circle, white house icon (from markup), shadow 0 4px 12px #0000004d. Zoom +/- buttons: top-right stack, 40px white squares radius 8, shadow 0 2px 6px #0003. Search button: top-left 40px white circle.
 - Below: "Exact location will be provided after booking." 14px mt 18; "Neighbourhood highlights" 18px medium margin 40px 0 12px; paragraph 15px/1.5; "Show more" (same style as description Show more, with chevron) — inert.
 """),
- 'HostSection': dict(model='static', shots=['host-1440.png', 'host-390.png'], notes="""
+ 'HostSection': dict(model='static', shots=['host-section-desktop.png', 'host-section-mobile.png'], notes="""
 - Inner fragment of the "Meet your host" section (page assembler provides section wrapper). h2 22px/26px medium mb 24.
 - Layout grid `340px 1fr`, gap 48 (≤1128px: 1 column).
 - Host card: 1px card-border, radius 20, shadow-card, grid `1fr 100px`, padding 30px 24px. Avatar `IMG/aa4e82a4.jpg` 88px circle + 28px rausch verified badge (2px white border, bottom 4 right 0) with white check SVG. Name 26px medium ("Mirashya<br>Homes" wraps naturally in the column), "Host" 13px mt 4. Right stats column: left border #ebebeb, padding-left 20: three rows (padding 10px 0, separators #ebebeb): "1,463"/Reviews, "4.68★"/Rating, "2"/Years hosting — values 20px medium, labels 12px.
 - Facts under the card (mt 22, gap 14): 24px icons + 15px text: "Born in the 80s", "Where I went to school: NICMAR GOA".
 - Right column: "Co-Hosts" 18px medium mb 16; 3-col grid (gap 16px 8px, mb 30) of 34px avatars + 14px names (initial circles for Shruti / Amisha with inline colours from markup). "Host details" 18px medium mb 16; "Response rate: 100%" / "Responds within an hour" 15px/1.6. "Message host" button grey200, radius 8, padding 14px 24px, 15px medium, mt 18, hover grey300. Safety note row: 24px shield icon, 12px muted2 text, mt 30.
 """),
- 'ThingsToKnow': dict(model='static', shots=['things-1440.png', 'things-390.png'], notes="""
+ 'ThingsToKnow': dict(model='static', shots=['things-to-know-desktop.png', 'things-to-know-mobile.png'], notes="""
 - Inner fragment of the "Things to know" section (page assembler provides wrapper). h2 22px/26px medium mb 24.
 - 3-column grid gap 32 (≤1128px: 1 column, gap 24). Each column: 24px icon mb 18, title 16px medium mb 14, paragraphs 14px/1.5 mb 8, "Learn more" 14px medium underlined link.
 """),
- 'MoreStaysNearby': dict(model='click-driven (carousel paging)', shots=['stays-1440.png', 'stays-390.png'], notes="""
+ 'MoreStaysNearby': dict(model='click-driven (carousel paging)', shots=['nearby-stays-desktop.png', 'nearby-stays-mobile.png'], notes="""
 - Inner fragment of the last section (page assembler provides wrapper). Header row: h2 "More stays nearby" (22px/26px medium, margin 0) + pager on the right: "1 / 2" (14px muted2, mr 6) and two 32px round buttons (1px #b0b0b0, white, 12px chevrons; `disabled` → opacity .3).
 - Rail: flex gap 20, overflow-x auto, `scroll-behavior:smooth`, hidden scrollbar, pb 4. Cards `flex: 0 0 calc((100% - 80px)/5)` (≤1128px: (100% - 40px)/3; ≤743px: (100% - 20px)/2). Image 1:1 cover radius 12; title 14px medium mt 8, 2-line clamp; price line 13px mt 4: "₹23,600 " + 10px star + " 4.91".
 - 8 cards from the markup, images in order: `8abfcd86.jpg, 06aec3c1.jpg, 349c67b4.jpg, d1e34b27.jpg, 4f067ab6.jpg, eb203049.jpg, 06aec3c1.jpg, d1e34b27.jpg` (the original repeats two).
 - Paging (inferred): next scrolls the rail by its clientWidth + 20, prev by the negative; page indicator = `Math.round(scrollLeft / (clientWidth + 20)) + 1` of `Math.ceil(scrollWidth / (clientWidth + 20))`; prev disabled at start, next disabled at end. Update on the rail's scroll event.
 """),
- 'PhotoTourModal': dict(model='click-driven overlay (+ URL state ?modal=PHOTO_TOUR_SCROLLABLE)', shots=['tour-1440.png', 'tour-scrolled-1440.png', 'tour-390.png'], notes="""
+ 'PhotoTourModal': dict(model='click-driven overlay (+ URL state ?modal=PHOTO_TOUR_SCROLLABLE)', shots=['photo-tour-desktop.png', 'photo-tour-scrolled-desktop.png', 'photo-tour-mobile.png'], notes="""
 - Always rendered; visibility driven by `tourOpen` from useListingUI. Closed: `opacity:0; visibility:hidden; transform:translateY(28px); transition: opacity .3s cubic-bezier(.2,0,0,1), transform .3s cubic-bezier(.2,0,0,1), visibility 0s linear .3s`. Open: `opacity:1; visibility:visible; transform:none; transition: opacity .3s cubic-bezier(.2,0,0,1), transform .3s cubic-bezier(.2,0,0,1), visibility 0s` (inferred open state — SingleFile dropped the unused rule). position fixed inset 0, z 120, white, flex column. `aria-hidden={!tourOpen}`, role dialog, aria-modal, aria-label "Photo tour".
 - Header (88px, padding 0 32px): Back button (40px round ghost `._bNHEUf`: hover grey200, active scale(.9); 18px ChevronLeftStrokeIcon strokeWidth 2; margin-left -8px) → `closeTour()`. Centred title "Photo tour" 16px medium (absolute left 50% translate). Right: Share (→ `share()`) and Save (→ `toggleSaved()`, HeartIcon filled when saved) ghost buttons, gap 2.
 - Scroll area: flex 1, overflow-y auto. Content max-width 1024, margin auto, padding 0 24px 96px.
@@ -178,13 +178,13 @@ NOTES = {
 - Rooms (`TOUR_ROOMS`): each `<section>` grid `1fr 1fr`, gap 20px 60px, align-start, padding 16px 0 4px (≤1128px 1 col). Left: sticky (top 20; static ≤1128px) name 32px medium line-height 1.1 letter-spacing -.02em + subtitle 16px muted2 mt 8 line-height 1.4 (omit if empty). Right: rows flex-col gap 12; each row grid gap 12, "single" 1 col / "double" 2 cols (≤743px double → 1 col). Photo buttons: aspect 3/2, radius 8, overflow hidden, bg #eee; img cover, hover scale 1.04 (transition transform .4s cubic-bezier(.2,0,0,1)); ::after hover overlay #00000014. aria-label "Romantic Jacuzzi 1BHK Candolim | Mirashya UG10 image {idx+1}", img alt = room name, loading lazy. Click → `openLightbox(photo.idx)`.
 - When the tour opens with `tourTargetRoom !== null`, scroll that room into view inside the scroll area and call `clearTourTarget()`; when it opens without a target, reset scrollTop to 0.
 """),
- 'Lightbox': dict(model='click-driven overlay (+ keyboard arrows)', shots=['lightbox-1440.png', 'lightbox-390.png'], notes="""
+ 'Lightbox': dict(model='click-driven overlay (+ keyboard arrows)', shots=['photo-lightbox-desktop.png', 'photo-lightbox-mobile.png'], notes="""
 - Always rendered; open when `lightboxIndex !== null`. Closed: `opacity:0; visibility:hidden; transition: opacity .25s ease, visibility 0s linear .25s`; open: `opacity:1; visibility:visible; transition: opacity .25s ease, visibility 0s` (inferred). Fixed inset 0, z 140, white, flex centre. role dialog, aria-modal, aria-label "Photo viewer".
 - Header (absolute top, 72px, padding 0 24px, z 3): left grid button (GridDotsIcon, 40px ghost round, margin-left -8px, aria-label "Show all photos") → `closeLightbox()` (returns to the tour underneath). Centre title (16px medium, absolute centred) = the photo's room name (`ALL_TOUR_PHOTOS[i].room`). Right group gap 12: counter "{i+1} / 43" (14px) and Close button (CloseIcon) → `closeLightbox()`.
 - Stage `._VPKRNC`: full size, padding 88px 96px (≤743px: 80px 12px), flex centre; the image is `max-width:100%; max-height:100%; object-fit:contain` of `ALL_TOUR_PHOTOS[i].src`.
 - Prev/next: 40px round buttons with 1px #222 border, white, absolute vertically centred at left 20 / right 20, z 3, 18px ChevronLeftStrokeIcon/ChevronRightStrokeIcon strokeWidth 4; hover grey100; active `translateY(-50%) scale(.92)`; disabled at the ends (opacity .28, border #ccc, no hover). ArrowLeft/ArrowRight keys navigate while open.
 """),
- 'AmenitiesModal': dict(model='click-driven overlay', shots=['amenities-1440.png', 'amenities-390.png'], notes="""
+ 'AmenitiesModal': dict(model='click-driven overlay', shots=['amenities-modal-desktop.png', 'amenities-390.png'], notes="""
 - Always rendered; open when `amenitiesOpen`. Backdrop: fixed inset 0, z 150, `#00000080`, flex centre; closed `opacity:0; visibility:hidden; transition: opacity .2s ease, visibility 0s linear .2s`; open `opacity:1; visibility:visible; transition: opacity .2s ease, visibility 0s` (inferred). Clicking the backdrop (not the panel) → `closeAmenities()`.
 - Panel: white, width 780 (max calc(100vw - 48px)), max-height calc(100vh - 96px), radius 12, flex column, overflow hidden; closed `translateY(20px)`, open `translateY(0)`, transition transform .25s cubic-bezier(.2,0,0,1).
 - Top bar 64px padding 0 24px: close button (40px ghost round, CloseIcon, margin-left -8px) → `closeAmenities()`.

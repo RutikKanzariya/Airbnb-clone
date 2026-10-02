@@ -1,9 +1,11 @@
 # Page Topology: https://airbnb-clone-umber-two.vercel.app/
 
+> The measurements and hashed classes below describe the captured reference. The current clone's React composition and post-capture interaction additions are summarized in [the architecture and behavior specs](README.md).
+
 - **Route:** `/` (`src/app/page.tsx` → `src/components/listing/ListingPage.tsx`)
 - **Components:** `src/components/listing/` · **Images:** `public/images/listing/` · **Reference screenshots:** `docs/design-references/sections/`
 - **Query state:** `/?modal=PHOTO_TOUR_SCROLLABLE` is the same page with the photo tour overlay open (second saved capture). No separate route.
-- **Source:** the live site sits behind Vercel's bot checkpoint, so extraction used two SingleFile captures of the page (`docs/design-references/Romantic Jacuzzi ... (8：02：52 PM).html` and `(8：02：55 PM).html`), rendered locally in headless Chromium. The original is a hand-written static page (hashed class names, a single 26 KB stylesheet, vanilla JS that SingleFile stripped).
+- **Historical source note:** the live site sat behind Vercel's bot checkpoint, so the initial extraction used two SingleFile page captures rendered locally in headless Chromium. Those original HTML captures are not retained in the current repository; the visual references that remain are under `docs/design-references/sections/`. The extracted reference was a static page with hashed class names and a single stylesheet; SingleFile stripped its JavaScript.
 
 ## Layers (z-index)
 | Layer | Element | Position | z |
@@ -52,3 +54,11 @@ There is no footer on the original page.
 | PhotoTourModal | click + URL state |
 | Lightbox | click + arrow keys |
 | AmenitiesModal | click (backdrop / close) |
+
+## Current clone composition
+
+The Next.js App Router serves one page at `/`. `src/app/layout.tsx` loads the local variable font, global stylesheet, metadata, and favicon; `src/app/page.tsx` renders `ListingPage`. The listing page composes the header, sticky section navigation, listing content, booking sidebar, and page-level photo-tour, lightbox, amenities, and toast overlays.
+
+`ListingUIProvider` supplies typed shared UI state for cross-section actions: the photo tour and both lightbox modes, amenities dialog, reservation requests, Saved state, and toast notifications. Search, menu, login, language/currency, host messaging, offer claiming, and reservation review state is owned by the component that presents each flow. The header search applies filters to the URL; the photo tour has its own `modal=PHOTO_TOUR_SCROLLABLE` query value.
+
+The original reference's responsive measurements above remain the visual baseline. See the current feature specs for clone-specific behavior and the demo-only boundaries; there is no server-side listing, booking, identity, messaging, or payment layer.

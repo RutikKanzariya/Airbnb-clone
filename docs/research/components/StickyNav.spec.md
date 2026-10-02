@@ -3,7 +3,7 @@
 ## Overview
 - **Target file:** `src/components/listing/StickyNav.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/stickynav-1440.png`
+- `docs/design-references/sections/sticky-navigation-desktop.png`
 - **Interaction model:** scroll-driven (window scroll listener)
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -11,8 +11,12 @@
 - Fixed bar (top 0, z-index 45, white, 1px bottom border #ebebeb), hidden by default: `transform: translateY(-100%); opacity:0; pointer-events:none; transition: transform .25s ease, opacity .25s ease`.
 - **Trigger (inferred — original JS was stripped from the save):** visible (`translateY(0); opacity:1; pointer-events:auto`) once `window.scrollY` is past the bottom of the photo gallery (element id `photo-gallery`, i.e. `gallery.getBoundingClientRect().bottom < 0`). Listen to scroll with `{ passive: true }` and also evaluate on mount. Set `aria-hidden` accordingly.
 - Links: Photos → `#photos`, Amenities → `#amenities`, Reviews → `#reviews`, Location → `#location`. Scroll-spy: the active link gets class state `._KOWlKT` (a 2px #222 underline 8px in from each side, 12px from the bottom). Active = the last of those sections whose top is ≤ 80px from the viewport top (fallback Photos). Clicking a link smooth-scrolls to the section (html already has scroll-behavior:smooth); offset so the section top lands just under the 66px bar (call `window.scrollTo({ top: el.getBoundingClientRect().top + scrollY - 66, behavior: 'smooth' })` and preventDefault).
-- Right side: price block (right-aligned, 13px/1.2): "₹28,499" (15px medium) + " for 5 nights"; second line: star mask icon 11px (use StarIcon at 11x11, vertical-align -1px) + " 4.95 · 19 reviews". Reserve button: gradient pill, 40px tall, 14px, padding 0 20px, hover → reserve-hover gradient, active scale(.985). Clicking Reserve scrolls to top smoothly (inferred).
+- Right side: price block (right-aligned, 13px/1.2): "₹28,499" (15px medium) + " for 5 nights"; second line: star mask icon 11px (use StarIcon at 11x11, vertical-align -1px) + " 4.95 · 19 reviews". Reserve button: gradient pill, 40px tall, 14px, padding 0 20px, hover → reserve-hover gradient, active scale(.985). The original capture suggested scrolling to the booking card; see current behavior below.
 - The whole bar's inner container is max-width 1280px, padding 0 80px, height 66px, flex space-between. No responsive rules apply to it.
+
+## Current clone additions
+
+- The Reserve button requests the booking card's reservation-review dialog through `ListingUIProvider`; it does not merely scroll to the top. See [`BookingSidebar.spec.md`](BookingSidebar.spec.md) for the local review and demo-confirmation boundary.
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
@@ -27,7 +31,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css

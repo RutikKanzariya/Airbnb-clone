@@ -26,14 +26,14 @@ Reference page: https://airbnb-clone-umber-two.vercel.app/
 
 ## Demo scope and limitations
 
-This project is a front-end clone and interaction prototype. It does not connect to Airbnb or a booking, messaging, identity, or payment backend.
+This is an independent, front-end Airbnb-inspired clone for demonstration and learning. It is not affiliated with Airbnb and does not connect to Airbnb or any live travel service. Listing details, availability, prices, and search suggestions are sample UI data; no live inventory is queried.
 
-- Search filters are reflected in the page URL; they do not query a listings service.
-- Reserve opens a local review/confirmation flow. It does not create a real reservation or charge a payment method.
-- Host messages can be saved in the current browser for demonstration, but are not delivered to the host.
-- Login, Google, and Apple buttons demonstrate the interface only; authentication is not connected.
-- Claiming the surprise offer demonstrates the claim flow and code `STAY10`; the discount is not redeemed by a booking service.
-- Language and currency choices are interface demonstrations and are not saved to an account.
+- **Search:** selected destinations, dates, and guests are reflected in the URL, but are not sent to a listings service.
+- **Booking:** the page calculates and displays an estimated total from the selected dates. Reserve opens a local review and confirmation flow; it does not check real availability, create a reservation, or charge a payment method.
+- **Host messages:** submitted messages are saved in this browser's local storage for demonstration and are not sent to a host.
+- **Login:** the login and Google/Apple controls demonstrate the interface only. No account is created and authentication is not connected.
+- **Surprise offer:** the demo displays code `STAY10` for 10% off, but the code is not validated or redeemable through a booking service.
+- **Language and currency:** choices demonstrate the preferences interface; they are not connected to an account or used to convert prices.
 
 ## Getting started
 
@@ -55,31 +55,59 @@ npm run dev        # http://localhost:5000
 ## Project structure
 
 ```
-src/
-  app/
-    layout.tsx            # font (Airbnb Cereal VF via next/font/local) + metadata
-    page.tsx              # renders <ListingPage />
-    globals.css           # Tailwind v4 + design tokens (ink, rausch, grey100…)
-  components/listing/
-    ListingPage.tsx       # assembles every section and overlay
-    ListingUIProvider.tsx # shared UI state: tour, lightbox, modals, reservation, toast, saved
-    data.ts               # hero photos + photo-tour rooms
-    icons.tsx             # icons shared across sections
-    SiteHeader, StickyNav, ListingTitle, PhotoGallery, ListingOverview,
-    DescriptionAndSleep, AmenitiesPreview, AvailabilityCalendar, BookingSidebar,
-    ReviewsSummary, ReviewsList, LocationSection, HostSection, ThingsToKnow,
-    MoreStaysNearby, PhotoTourModal, Lightbox, AmenitiesModal, LoginModal,
-    LanguageCurrencyModal, HostMessageModal, Toast (.tsx)
-  hooks/useDialogFocus.ts # dialog initial focus + Tab trap
-  types/listing.ts
-public/images/listing/    # all 68 listing images
-tools/                    # extraction + QA pipeline (see tools/README.md)
-.claude/agents/           # sub-agent configs
-.agents/skills/           # cloning skill
-docs/
-  research/               # page topology, behaviour notes, one spec per component
-  design-references/      # saved captures of the reference + per-section screenshots
+airbnb-clone/
+├── src/
+│   ├── app/                         # Next.js routes, layout, metadata and global styles
+│   ├── components/listing/          # listing page, sections, search, booking and dialogs
+│   ├── hooks/useDialogFocus.ts      # accessible dialog focus management
+│   └── types/listing.ts             # shared listing types
+├── public/
+│   ├── images/listing/              # 68 listing and nearby-stay images
+│   └── faviconimage.webp            # browser tab icon
+├── docs/
+│   ├── research/
+│   │   ├── README.md                # research index and component-spec guide
+│   │   ├── ARCHITECTURE.md          # current app structure and state ownership
+│   │   ├── PAGE_TOPOLOGY.md         # reference layout and clone composition
+│   │   ├── BEHAVIORS.md             # captured behavior plus clone-specific additions
+│   │   └── components/              # visual and interaction specs
+│   ├── design-references/
+│   │   ├── README.md                # screenshot provenance and naming
+│   │   └── sections/                # desktop/mobile reference screenshots
+│   └── reviews/                     # retained code-review report
+├── tools/                           # extraction and QA scripts; see tools/README.md
+├── .agents/skills/                  # website-cloning skill
+├── .claude/agents/                  # agent definitions
+├── package.json                     # scripts, dependencies and project metadata
+├── next.config.ts                   # Next.js configuration
+├── tsconfig.json                    # TypeScript configuration
+└── README.md                        # project overview and setup instructions
 ```
+
+The page is assembled in `src/components/listing/ListingPage.tsx`. Shared interface state and overlays are managed by `ListingUIProvider.tsx`; individual files in the same folder implement the page sections and interactions.
+
+## Architecture
+
+The app uses the Next.js App Router with a single listing route. The main render and interaction flow is:
+
+```text
+src/app/layout.tsx
+  └── src/app/page.tsx
+        └── ListingPage
+              ├── ListingUIProvider
+              │     ├── PageContent (page content and shared header)
+              │     ├── listing sections (gallery, details, booking, reviews, etc.)
+              │     └── shared overlays (photo tour, lightbox, amenities, toast)
+              └── section-level dialogs and controls
+```
+
+- **App shell:** `layout.tsx` loads the local Airbnb Cereal variable font, global styles, page metadata, and favicon. `page.tsx` maps the root route to `ListingPage`.
+- **Composition:** `ListingPage.tsx` lays out the header, sticky navigation, listing sections, booking sidebar, and page-level overlays. Each section is a focused component in `src/components/listing/`; shared listing and photo-tour content is defined in `data.ts`.
+- **Client interactions:** interactive components opt into React client rendering where they need state, browser APIs, or event handlers. Search and booking controls keep their working selections in component state. Search submission writes filters to the URL; opening the photo tour also uses its documented `modal` query parameter.
+- **Shared UI state:** `ListingUIProvider` exposes a typed context through `useListingUI` for cross-section actions such as opening photo views and amenities, requesting a reservation review, toggling Saved, and showing toasts. It also coordinates shared overlay behavior, including Escape handling, background scroll locking, and returning focus to the element that opened an overlay.
+- **Local demo state:** dialogs and flows that are confined to one feature manage their state in that feature's component. The host-message form stores its demo messages in browser `localStorage`; there is no remote API or backend.
+- **Presentation and assets:** Tailwind CSS v4 and the global design tokens in `globals.css` provide styling. Listing images are served from `public/images/listing/`, while listing text, image paths, and photo-tour room data live in `data.ts`.
+- **Accessibility helpers:** `useDialogFocus` provides dialog focus management; the shared provider and dialog components handle focus restoration, keyboard dismissal, and background inertness for overlays.
 
 ## AI workflow artifacts
 
@@ -88,7 +116,7 @@ docs/
 | `.agents/skills/clone-website/` | The cloning **skill** that drove the build (from the starter template, © JCodesMore, MIT). `.claude/commands/clone-website.md` is the Claude Code slash-command bridge to it. |
 | `.claude/agents/section-builder.md` | **Sub-agent:** builds components from their specs. 8 ran in parallel. |
 | `.claude/agents/code-reviewer.md` | **Sub-agent:** reviews correctness, structure and accessibility. Report and resolutions: `docs/reviews/code-review.md`. |
-| `.claude/agents/visual-qa.md` | **Sub-agent:** pixel diff plus behaviour checks against the reference. Report: `docs/reviews/visual-qa.md`. |
+| `.claude/agents/visual-qa.md` | **Sub-agent:** defines the visual and interaction QA workflow used during the build. No standalone visual-QA report is retained in `docs/reviews/`. |
 | `tools/` | Extraction and QA scripts the agents wrote and ran (Playwright + Pillow). See `tools/README.md`. |
 | `docs/research/` | Page topology, behaviour notes and the 18 component specs the builders worked from. |
 | `docs/PROMPTS.md` | The prompt sequence used during development. |

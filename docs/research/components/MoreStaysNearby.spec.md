@@ -3,8 +3,8 @@
 ## Overview
 - **Target file:** `src/components/listing/MoreStaysNearby.tsx`
 - **Screenshots:**
-- `docs/design-references/sections/stays-1440.png`
-- `docs/design-references/sections/stays-390.png`
+- `docs/design-references/sections/nearby-stays-desktop.png`
+- `docs/design-references/sections/nearby-stays-mobile.png`
 - **Interaction model:** click-driven (carousel paging)
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
@@ -13,6 +13,11 @@
 - Rail: flex gap 20, overflow-x auto, `scroll-behavior:smooth`, hidden scrollbar, pb 4. Cards `flex: 0 0 calc((100% - 80px)/5)` (≤1128px: (100% - 40px)/3; ≤743px: (100% - 20px)/2). Image 1:1 cover radius 12; title 14px medium mt 8, 2-line clamp; price line 13px mt 4: "₹23,600 " + 10px star + " 4.91".
 - 8 cards from the markup, images in order: `8abfcd86.jpg, 06aec3c1.jpg, 349c67b4.jpg, d1e34b27.jpg, 4f067ab6.jpg, eb203049.jpg, 06aec3c1.jpg, d1e34b27.jpg` (the original repeats two).
 - Paging (inferred): next scrolls the rail by its clientWidth + 20, prev by the negative; page indicator = `Math.round(scrollLeft / (clientWidth + 20)) + 1` of `Math.ceil(scrollWidth / (clientWidth + 20))`; prev disabled at start, next disabled at end. Update on the rail's scroll event.
+
+## Current clone additions
+
+- Each nearby-stay image is a keyboard-operable button. Activating it opens the shared lightbox with the nearby stays as its photo set; previous/next buttons and left/right arrow keys navigate that set.
+- This image viewer is local UI only; nearby-stay cards do not navigate to live listings.
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.
@@ -27,7 +32,7 @@
 - Images: markup `src="IMG/<file>"` means `public/images/listing/<file>`; build URLs with `` `${IMG}/<file>` `` where `IMG` is exported from `@/components/listing/data`. Use plain `<img>` (eslint rule is disabled for this folder). Keep `alt` text verbatim (often empty).
 - Text content: verbatim from the markup, including emoji, curly apostrophes (’), `·` separators and `&nbsp;`.
 - Named exports, TypeScript strict, no `any`, 2-space indent. Add `"use client"` only if the component needs state/effects/handlers.
-- Shared UI state (tour, lightbox, amenities modal, toast, saved) comes from `useListingUI()` in `@/components/listing/ListingUIProvider`: `{ tourOpen, tourTargetRoom, openTour(roomIndex?), closeTour(), clearTourTarget(), lightboxIndex, openLightbox(idx), closeLightbox(), amenitiesOpen, openAmenities(), closeAmenities(), toast, showToast(msg), saved, toggleSaved(), share() }`. Shared tour data: `TOUR_ROOMS`, `ALL_TOUR_PHOTOS`, `HERO_PHOTOS`, `LISTING_TITLE` from `data.ts`.
+- Shared UI state and the current provider API are documented in [`ListingUIProvider.spec.md`](ListingUIProvider.spec.md) and [`ARCHITECTURE.md`](../ARCHITECTURE.md).
 
 ## Source CSS (verbatim, every rule touching this component's classes)
 ```css
