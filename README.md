@@ -9,9 +9,14 @@ Reference page: https://airbnb-clone-umber-two.vercel.app/
 - **Listing page:** header with search pill, title with Share/Save, a 5-photo hero grid, overview, "Where you'll sleep", amenities, a two-month availability calendar, a sticky booking card, reviews with rating breakdown, a location map, host profile, "Things to know" and a "More stays nearby" carousel.
 - **Sticky section nav:** appears once you scroll past the photos and underlines the section in view (Photos / Amenities / Reviews / Location).
 - **Photo tour:** 9 rooms and 43 photos, with category thumbnails and sticky room titles. Opens from the gallery and is linkable at `/?modal=PHOTO_TOUR_SCROLLABLE`.
-- **Lightbox:** full-screen viewer with a room title, a `n / 43` counter, prev/next buttons and arrow-key navigation.
+- **Photo viewing:** full-screen viewer with a room title, photo counter, previous/next buttons and arrow-key navigation. It opens from the hero gallery, bedroom/living-room cards and the nearby-stays carousel.
 - **Amenities modal:** all 12 groups, including items marked unavailable.
-- **Interactions:** the calendar pages through months and lets you select or clear dates. "Show more" expands long text, the carousel pages, Share copies the link and Save toggles, with a toast for each.
+- **Search controls:** destination suggestions, date selection and guest counters. Applying a search updates the URL with the selected filters.
+- **Booking flow:** check-in and checkout dates and guest totals can be changed in the booking card. The displayed stay length and estimated total update with the dates. Both the booking-card and sticky-nav Reserve buttons open a reservation review and confirmation.
+- **Host and account dialogs:** the host section opens a message composer; the header account control opens a login/sign-up dialog; the language-and-currency menu opens a tabbed preferences dialog.
+- **Surprise offer:** open and claim the 10% stay offer from the booking card.
+- **Other interactions:** the calendar pages through months and lets you select or clear dates. "Show more" expands long text, the carousel pages, Share copies the link and Save toggles, with a toast for each.
+- **Hamburger menu:** links to language and currency preferences, Help Centre, hosting, referrals, co-hosting and login/sign-up.
 - **Responsive:** desktop-first breakpoints at 1128px and 743px, matching the reference.
 - **Accessible:**
   - keyboard focus ring (keyboard only)
@@ -19,19 +24,30 @@ Reference page: https://airbnb-clone-umber-two.vercel.app/
   - keyboard-operable calendar, and ARIA state on toggles
   - `prefers-reduced-motion` honoured, including JS-driven scrolling
 
+## Demo scope and limitations
+
+This project is a front-end clone and interaction prototype. It does not connect to Airbnb or a booking, messaging, identity, or payment backend.
+
+- Search filters are reflected in the page URL; they do not query a listings service.
+- Reserve opens a local review/confirmation flow. It does not create a real reservation or charge a payment method.
+- Host messages can be saved in the current browser for demonstration, but are not delivered to the host.
+- Login, Google, and Apple buttons demonstrate the interface only; authentication is not connected.
+- Claiming the surprise offer demonstrates the claim flow and code `STAY10`; the discount is not redeemed by a booking service.
+- Language and currency choices are interface demonstrations and are not saved to an account.
+
 ## Getting started
 
 Requires Node.js 24 (see `.nvmrc`).
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000
+npm run dev        # http://localhost:5000
 ```
 
 | Command | What it does |
 |---|---|
-| `npm run dev` | Development server |
-| `npm run build` / `npm start` | Production build / server |
+| `npm run dev` | Development server on port 5000 |
+| `npm run build` / `npm start` | Production build / server on port 5000 |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | TypeScript (`tsc --noEmit`) |
 | `npm run check` | Lint, typecheck and build together |
@@ -46,13 +62,14 @@ src/
     globals.css           # Tailwind v4 + design tokens (ink, rausch, grey100…)
   components/listing/
     ListingPage.tsx       # assembles every section and overlay
-    ListingUIProvider.tsx # shared UI state: tour, lightbox, modal, toast, saved
+    ListingUIProvider.tsx # shared UI state: tour, lightbox, modals, reservation, toast, saved
     data.ts               # hero photos + photo-tour rooms
     icons.tsx             # icons shared across sections
     SiteHeader, StickyNav, ListingTitle, PhotoGallery, ListingOverview,
     DescriptionAndSleep, AmenitiesPreview, AvailabilityCalendar, BookingSidebar,
     ReviewsSummary, ReviewsList, LocationSection, HostSection, ThingsToKnow,
-    MoreStaysNearby, PhotoTourModal, Lightbox, AmenitiesModal, Toast (.tsx)
+    MoreStaysNearby, PhotoTourModal, Lightbox, AmenitiesModal, LoginModal,
+    LanguageCurrencyModal, HostMessageModal, Toast (.tsx)
   hooks/useDialogFocus.ts # dialog initial focus + Tab trap
   types/listing.ts
 public/images/listing/    # all 68 listing images

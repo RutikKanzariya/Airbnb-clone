@@ -4,7 +4,7 @@
 - **Target file:** `src/components/listing/BookingSidebar.tsx`
 - **Screenshots:**
 - `docs/design-references/sections/aside-1440.png`
-- **Interaction model:** scroll (CSS sticky) + static
+- **Interaction model:** scroll (CSS sticky), editable booking dates/guests, and reservation confirmation
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
 ## Behaviors, states & specifics
@@ -14,6 +14,8 @@
 - Booking card: 1px card-border, radius 12, shadow-card, padding 22px 24px 24px. Price row baseline gap 6 mb 18: "₹28,499" 22px medium underlined (offset 2px) + "for 5 nights" 15px. Date/guest box: 1px #b0b0b0 radius 8 overflow hidden; 2-col top row (CHECK-IN 10/18/2026 | CHECKOUT 10/23/2026) with 1px #b0b0b0 divider; guests row with top border: "GUESTS" / "2 guests" + 16px ChevronDownIcon. Labels 10px bold letter-spacing .04em; values 14px mt 2. Cells padding 10px 12px.
 - Free-cancellation pill: centred, grey100 bg, muted2, radius 8, 13px, padding 8, margin 16px 0: "Free cancellation before <b>17 October</b>" (b is #222 medium).
 - Reserve button full width, 48px, 16px medium, gradient, radius 999, padding 0 24px, mt 2; hover reserve-hover; active scale(.985). "You won't be charged yet" 14px muted2 centred mt 16.
+- Check-in and checkout are editable date fields; nightly price, stay length, and cancellation date update from the selected range. The guest row opens counters for adults, children, infants, and pets.
+- Reserve opens a review dialog with the selected dates, guest count, and total. Confirming shows a reservation confirmation; the demo does not process a payment.
 - Report row (mt 26, centred, gap 8, muted2 14px): 16px flag icon (inline SVG from markup) + underlined link "Report this listing".
 
 ## Conversion rules (apply to every element)

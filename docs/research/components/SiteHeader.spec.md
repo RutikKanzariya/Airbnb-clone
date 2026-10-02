@@ -5,17 +5,22 @@
 - **Screenshots:**
 - `docs/design-references/sections/header-1440.png`
 - `docs/design-references/sections/header-390.png`
-- **Interaction model:** static (hover states only)
+- **Interaction model:** destination, date, and guest search panels plus hover states
 - **Source:** `https://airbnb-clone-umber-two.vercel.app/` (SingleFile capture; original class names are hashed, e.g. `._WQsVLm`)
 
 ## Behaviors, states & specifics
 - `<header>` is in normal flow (position:relative, z-index 50), NOT sticky. Full width with 80px side padding; inner grid `1fr auto 1fr`, height 88px, plus 1px bottom border (#ebebeb) → 89px total.
 - Logo: the Airbnb wordmark SVG (viewBox 0 0 3490 1080) at height 32px, colour rausch via `currentColor`. Link href="#", aria-label "Airbnb homepage".
-- Search pill: first button contains the house image `IMG/e686c455.png` (48x48, margin-left -6px) then "Anywhere". Separators are 1x24 #ddd spans. "Add guests" is muted2 and weight 400.
+- Search pill: first button contains the house image `IMG/e686c455.png` (48x48, margin-left -6px) then "Anywhere". The date segment defaults to "Anytime"; the guest segment defaults to "Add guests". Separators are 1x24 #ddd spans. "Add guests" is muted2 and weight 400.
 - Search circle `._HEUMtF`: 32px rausch circle whose `::before` draws a white magnifier. The original used a data-URI background image: use this inline SVG instead, centred at 14x14, white: `<svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="4"><path d="M13 24a11 11 0 1 0 0-22 11 11 0 0 0 0 22zm8-3 9 9"/></svg>` (render as an absolutely-centred 14px child span instead of ::before).
+- Clicking Anywhere opens a searchable list of suggested destinations; clicking Anywhere again closes it. Selecting a suggestion updates the destination summary.
+- Clicking Anytime opens a two-month calendar with date-range selection, month navigation, flexible-date choices, and a clear action. Clicking Add guests opens Adults, Children, Infants, and Pets counters.
+- The search summary shows selected destination, dates, and guest counts. A dimmed backdrop or Escape closes the active panel; the Search button closes the search controls.
+- The hamburger opens a menu with language/currency, Help Centre, hosting, referral, co-host, and account actions. Languages & currency opens a dialog with language/region and currency tabs.
+- The globe button after “Become a host” opens the login/sign-up dialog. The menu’s “Log in or sign up” action opens the same dialog; authentication providers are visual demo controls only.
 - Right nav: "Become a host" (hidden ≤743px along with the search pill), globe button, hamburger button (both 40px grey200 circles, 16px icons).
 - Skip link: `<a href="#main" class>` "Skip to content" positioned absolute left:-999px, becomes left:0 on focus (see `._DLLasj`). Render it as the first child of the header component.
-- Hover: pill shadow 0 1px 4px #00000014 → 0 2px 8px #0000001f (.2s ease); "Become a host" gets grey100 bg; circle buttons grey200 → grey300 (.18s).
+- The search pill has no hover animation; its panel and selected segment change only on click. "Become a host" gets grey100 on hover; circle buttons grey200 → grey300 (.18s).
 
 ## Conversion rules (apply to every element)
 - Source CSS below is the original site's stylesheet, verbatim. Translate every declaration to Tailwind v4 utilities (arbitrary values are fine: `px-[15px]`, `text-[26px]`, `leading-[30px]`, `shadow-[0_2px_8px_#00000026]`, `grid-cols-[35fr_17fr_17fr]`, `aspect-[1120/494]`). Keep exact values.

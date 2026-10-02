@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useDialogFocus } from "@/hooks/useDialogFocus";
 import { cn } from "@/lib/utils";
 import {
@@ -22,32 +22,51 @@ const navButton =
 
 const iconSpan = "inline-block h-[18px] w-[18px]";
 
-const TOTAL = ALL_TOUR_PHOTOS.length;
-
 export function Lightbox() {
-  const { lightboxIndex, openLightbox, closeLightbox } = useListingUI();
-  const open = lightboxIndex !== null;
+  const {
+    lightboxIndex,
+    lightboxOpen,
+    customLightbox,
+    openLightbox,
+    openImageLightbox,
+    closeLightbox,
+  } = useListingUI();
+  const open = lightboxOpen;
   const dialogRef = useRef<HTMLDivElement>(null);
   useDialogFocus(dialogRef, open);
 
   // Keep the last photo on screen while the viewer fades out.
   const [lastIndex, setLastIndex] = useState<number>(0);
   if (lightboxIndex !== null && lightboxIndex !== lastIndex) setLastIndex(lightboxIndex);
-  const index = lightboxIndex ?? lastIndex;
-  const photo = ALL_TOUR_PHOTOS[index];
+  const [lastCustomLightbox, setLastCustomLightbox] = useState(customLightbox);
+  if (customLightbox !== null && customLightbox !== lastCustomLightbox) {
+    setLastCustomLightbox(customLightbox);
+  }
+  const activeCustomLightbox = customLightbox ?? lastCustomLightbox;
+  const index = activeCustomLightbox ? activeCustomLightbox.index : lightboxIndex ?? lastIndex;
+  const photos = activeCustomLightbox?.photos ?? ALL_TOUR_PHOTOS;
+  const photo = photos[index];
 
   const hasPrev = index > 0;
-  const hasNext = index < TOTAL - 1;
+  const hasNext = index < photos.length - 1;
+
+  const navigateTo = useCallback(
+    (nextIndex: number) => {
+      if (activeCustomLightbox) openImageLightbox(activeCustomLightbox.photos, nextIndex);
+      else openLightbox(nextIndex);
+    },
+    [activeCustomLightbox, openImageLightbox, openLightbox],
+  );
 
   useEffect(() => {
-    if (lightboxIndex === null) return;
+    if (!lightboxOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft" && lightboxIndex > 0) openLightbox(lightboxIndex - 1);
-      else if (e.key === "ArrowRight" && lightboxIndex < TOTAL - 1) openLightbox(lightboxIndex + 1);
+      if (e.key === "ArrowLeft" && index > 0) navigateTo(index - 1);
+      else if (e.key === "ArrowRight" && index < photos.length - 1) navigateTo(index + 1);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [lightboxIndex, openLightbox]);
+  }, [lightboxOpen, index, photos.length, navigateTo]);
 
   return (
     <div
@@ -73,7 +92,7 @@ export function Lightbox() {
         <div className="absolute left-1/2 text-[16px] font-medium [transform:translate(-50%)]">{photo?.room}</div>
         <div className="ml-auto flex items-center gap-3">
           <span className="text-[14px]" aria-live="polite">
-            {index + 1} / {TOTAL}
+            {index + 1} / {photos.length}
           </span>
           <button className={ghostButton} type="button" aria-label="Close" onClick={closeLightbox}>
             <span className={iconSpan}>
@@ -87,7 +106,7 @@ export function Lightbox() {
         type="button"
         aria-label="Previous"
         disabled={!hasPrev}
-        onClick={() => hasPrev && openLightbox(index - 1)}
+        onClick={() => hasPrev && navigateTo(index - 1)}
       >
         <span className={iconSpan}>
           <ChevronLeftStrokeIcon strokeWidth={4} />
@@ -103,7 +122,7 @@ export function Lightbox() {
         type="button"
         aria-label="Next"
         disabled={!hasNext}
-        onClick={() => hasNext && openLightbox(index + 1)}
+        onClick={() => hasNext && navigateTo(index + 1)}
       >
         <span className={iconSpan}>
           <ChevronRightStrokeIcon strokeWidth={4} />

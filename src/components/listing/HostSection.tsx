@@ -1,4 +1,8 @@
+"use client";
+
+import { useRef, useState } from "react";
 import { IMG } from "@/components/listing/data";
+import { HostMessageModal } from "@/components/listing/HostMessageModal";
 
 const svgBase = {
   xmlns: "http://www.w3.org/2000/svg",
@@ -64,6 +68,9 @@ const CO_HOSTS: CoHost[] = [
 ];
 
 export function HostSection() {
+  const [messageOpen, setMessageOpen] = useState(false);
+  const messageButtonRef = useRef<HTMLButtonElement>(null);
+
   return (
     <>
       <h2 className="mb-6 text-[22px] leading-[26px] font-medium">Meet your host</h2>
@@ -130,8 +137,10 @@ export function HostSection() {
             Responds within an hour
           </div>
           <button
+            ref={messageButtonRef}
             type="button"
             className="mt-[18px] cursor-pointer rounded-[8px] border-none bg-grey200 px-6 py-3.5 text-[15px] leading-[normal] font-medium hover:bg-grey300"
+            onClick={() => setMessageOpen(true)}
           >
             Message host
           </button>
@@ -143,6 +152,12 @@ export function HostSection() {
           </div>
         </div>
       </div>
+      {messageOpen && (
+        <HostMessageModal
+          onClose={() => setMessageOpen(false)}
+          returnFocusRef={messageButtonRef}
+        />
+      )}
     </>
   );
 }

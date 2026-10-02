@@ -18,7 +18,7 @@ A single-page, pixel-accurate rebuild of an Airbnb listing ("Romantic Jacuzzi 1B
 - Airbnb Cereal VF loaded with `next/font/local` from `src/app/fonts/`
 
 ## Commands
-- `npm run dev`: dev server at http://localhost:3000
+- `npm run dev`: dev server at http://localhost:5000
 - `npm run check`: lint, typecheck and production build. Run this before finishing any change.
 
 ## Layout of the code

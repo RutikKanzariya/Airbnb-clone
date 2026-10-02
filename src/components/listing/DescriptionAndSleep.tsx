@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { ChevronRightSmallIcon } from "@/components/listing/icons";
-import { IMG } from "@/components/listing/data";
+import { ALL_TOUR_PHOTOS, IMG } from "@/components/listing/data";
 import { cn } from "@/lib/utils";
+import { useListingUI } from "./ListingUIProvider";
 
 const DESCRIPTION =
   "🌴 Plan Your Relaxing Holiday at Amor De Goa by Mirashya Homes! ✨ Stay in this cozy 1BHK in the heart of Candolim, featuring a private jacuzzi 🛁 for the perfect unwind. Enjoy high-speed WiFi 💻, Smart TV 📺, pet-friendly comfort 🐾, and stylish interiors. Just minutes from Candolim Beach 🏖️, popular cafés, restaurants, and nightlife 🍹, it’s ideal for couples seeking romance, relaxation, and a touch of luxury in North Goa. ❤️🌴";
@@ -15,6 +16,7 @@ const SLEEP = [
 
 export function DescriptionAndSleep() {
   const [expanded, setExpanded] = useState(false);
+  const { openLightbox } = useListingUI();
 
   return (
     <>
@@ -57,11 +59,21 @@ export function DescriptionAndSleep() {
         <div className="grid grid-cols-2 gap-[16px] max-[743px]:grid-cols-1">
           {SLEEP.map((s) => (
             <div key={s.title}>
-              <img
-                src={`${IMG}/${s.img}`}
-                alt=""
-                className="block aspect-[3/2] w-full rounded-[8px] border border-card-border object-cover"
-              />
+              <button
+                type="button"
+                aria-label={`View ${s.title} photo`}
+                onClick={() => {
+                  const index = ALL_TOUR_PHOTOS.findIndex((photo) => photo.src === `${IMG}/${s.img}`);
+                  if (index !== -1) openLightbox(index);
+                }}
+                className="block w-full overflow-hidden rounded-[8px] border-none bg-transparent p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+              >
+                <img
+                  src={`${IMG}/${s.img}`}
+                  alt={s.title}
+                  className="block aspect-[3/2] w-full rounded-[8px] border border-card-border object-cover"
+                />
+              </button>
               <div className="mt-[14px] text-[15px] font-medium">{s.title}</div>
               <div className="mt-[2px] text-[14px] text-muted2">{s.sub}</div>
             </div>

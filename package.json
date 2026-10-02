@@ -2,16 +2,16 @@
   "name": "airbnb-listing-clone",
   "version": "1.0.0",
   "private": true,
-  "description": "Pixel-accurate Airbnb listing page rebuilt in Next.js 16, React 19 and Tailwind CSS v4 with AI coding agents",
-  "author": "Bhautik-2004",
+  "description": "Airbnb-inspired listing page clone with interactive search, booking, photo gallery, and host features, built with Next.js, React, TypeScript, and Tailwind CSS",
+  "author": "Rutik kanzariya",
   "license": "MIT",
   "engines": {
     "node": ">=24"
   },
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 5000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --port 5000",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run typecheck && npm run build"

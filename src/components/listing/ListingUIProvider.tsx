@@ -14,12 +14,18 @@ interface ListingUI {
 
   /** Full-screen photo viewer; value is the global tour photo idx, null when closed. */
   lightboxIndex: number | null;
+  lightboxOpen: boolean;
+  customLightbox: { photos: { src: string; room: string }[]; index: number } | null;
   openLightbox: (idx: number) => void;
+  openImageLightbox: (photos: { src: string; room: string }[], idx: number) => void;
   closeLightbox: () => void;
 
   amenitiesOpen: boolean;
   openAmenities: () => void;
   closeAmenities: () => void;
+
+  reservationRequest: number;
+  requestReservation: () => void;
 
   /** Bottom-centre toast message; null when hidden. */
   toast: string | null;
@@ -49,7 +55,13 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
   const [tourOpen, setTourOpen] = useState(false);
   const [tourTargetRoom, setTourTargetRoom] = useState<number | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [customLightbox, setCustomLightbox] = useState<{
+    photos: { src: string; room: string }[];
+    index: number;
+  } | null>(null);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [amenitiesOpen, setAmenitiesOpen] = useState(false);
+  const [reservationRequest, setReservationRequest] = useState(0);
   const [toast, setToast] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -103,14 +115,27 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
 
   const openLightbox = useCallback(
     (idx: number) => {
-      if (lightboxIndex === null) rememberTrigger();
+      if (!lightboxOpen) rememberTrigger();
+      setCustomLightbox(null);
       setLightboxIndex(idx);
+      setLightboxOpen(true);
     },
-    [lightboxIndex, rememberTrigger],
+    [lightboxOpen, rememberTrigger],
+  );
+
+  const openImageLightbox = useCallback(
+    (photos: { src: string; room: string }[], idx: number) => {
+      if (!lightboxOpen) rememberTrigger();
+      setLightboxIndex(null);
+      setCustomLightbox({ photos, index: idx });
+      setLightboxOpen(true);
+    },
+    [lightboxOpen, rememberTrigger],
   );
 
   const closeLightbox = useCallback(() => {
     setLightboxIndex(null);
+    setLightboxOpen(false);
     restoreTrigger();
   }, [restoreTrigger]);
 
@@ -123,6 +148,10 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
     setAmenitiesOpen(false);
     restoreTrigger();
   }, [restoreTrigger]);
+
+  const requestReservation = useCallback(() => {
+    setReservationRequest((count) => count + 1);
+  }, []);
 
   const showToast = useCallback((message: string) => {
     setToast(message);
@@ -142,7 +171,7 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
   }, [showToast]);
 
   // Lock page scroll while any overlay is open.
-  const anyOverlay = tourOpen || lightboxIndex !== null || amenitiesOpen;
+  const anyOverlay = tourOpen || lightboxOpen || amenitiesOpen;
   useEffect(() => {
     if (!anyOverlay) return;
     const prev = document.body.style.overflow;
@@ -156,13 +185,13 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
-      if (lightboxIndex !== null) closeLightbox();
+      if (lightboxOpen) closeLightbox();
       else if (amenitiesOpen) closeAmenities();
       else if (tourOpen) closeTour();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [lightboxIndex, amenitiesOpen, tourOpen, closeTour, closeLightbox, closeAmenities]);
+  }, [lightboxOpen, amenitiesOpen, tourOpen, closeTour, closeLightbox, closeAmenities]);
 
   const value = useMemo<ListingUI>(
     () => ({
@@ -172,11 +201,16 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
       closeTour,
       clearTourTarget: () => setTourTargetRoom(null),
       lightboxIndex,
+      lightboxOpen,
+      customLightbox,
       openLightbox,
+      openImageLightbox,
       closeLightbox,
       amenitiesOpen,
       openAmenities,
       closeAmenities,
+      reservationRequest,
+      requestReservation,
       toast,
       showToast,
       saved,
@@ -189,11 +223,16 @@ export function ListingUIProvider({ children }: { children: ReactNode }) {
       openTour,
       closeTour,
       lightboxIndex,
+      lightboxOpen,
+      customLightbox,
       openLightbox,
+      openImageLightbox,
       closeLightbox,
       amenitiesOpen,
       openAmenities,
       closeAmenities,
+      reservationRequest,
+      requestReservation,
       toast,
       showToast,
       saved,

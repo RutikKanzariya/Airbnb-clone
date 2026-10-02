@@ -14,6 +14,9 @@ export const metadata: Metadata = {
     "Romantic Jacuzzi 1BHK Candolim | Mirashya UG10 - Serviced apartments for Rent in Candolim, Goa, India - Airbnb",
   description:
     "Romantic Jacuzzi 1BHK Candolim | Mirashya UG10 - Entire serviced apartment in Candolim, India.",
+  icons: {
+    icon: [{ url: "/faviconimage.webp", type: "image/webp" }],
+  },
 };
 
 export default function RootLayout({

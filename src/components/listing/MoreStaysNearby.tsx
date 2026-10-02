@@ -7,6 +7,7 @@ import {
   StarIcon,
 } from "@/components/listing/icons";
 import { IMG } from "@/components/listing/data";
+import { useListingUI } from "./ListingUIProvider";
 
 type Stay = { img: string; title: string; price: string; rating: string };
 
@@ -27,6 +28,7 @@ const pagerButton =
   "flex h-8 w-8 cursor-pointer items-center justify-center rounded-[50%] border border-solid border-[#b0b0b0] bg-white px-[6px] py-px leading-[normal] disabled:opacity-30";
 
 export function MoreStaysNearby() {
+  const { openImageLightbox } = useListingUI();
   const trackRef = useRef<HTMLDivElement>(null);
   // Captured initial state: "1 / 2", prev disabled. Only updated on the rail's scroll event.
   const [pager, setPager] = useState({ page: 1, total: 2, atStart: true, atEnd: false });
@@ -91,12 +93,24 @@ export function MoreStaysNearby() {
             key={i}
             className="min-w-0 shrink-0 grow-0 basis-[calc((100%-80px)/5)] max-[1128px]:basis-[calc((100%-40px)/3)] max-[743px]:basis-[calc((100%-20px)/2)]"
           >
-            <img
-              src={`${IMG}/${stay.img}`}
-              alt=""
-              loading="lazy"
-              className="block aspect-square w-full rounded-xl object-cover"
-            />
+            <button
+              type="button"
+              aria-label={`View photo: ${stay.title}`}
+              onClick={() =>
+                openImageLightbox(
+                  STAYS.map((item) => ({ src: `${IMG}/${item.img}`, room: item.title })),
+                  i,
+                )
+              }
+              className="block w-full overflow-hidden rounded-xl border-none bg-transparent p-0 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            >
+              <img
+                src={`${IMG}/${stay.img}`}
+                alt={stay.title}
+                loading="lazy"
+                className="block aspect-square w-full rounded-xl object-cover"
+              />
+            </button>
             <div className="mt-2 line-clamp-2 text-[14px] font-medium text-ellipsis">{stay.title}</div>
             <div className="mt-1 text-[13px]">
               {`${stay.price}   `}

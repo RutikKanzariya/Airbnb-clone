@@ -1,4 +1,4 @@
-"use client";
+"use client"; 
 
 import { HeartIcon, ShareIcon } from "@/components/listing/icons";
 import { LISTING_TITLE } from "@/components/listing/data";
@@ -26,7 +26,9 @@ export function ListingTitle() {
           </span>
           <span className="underline underline-offset-2">{saved ? "Saved" : "Save"}</span>
         </button>
+
       </div>
     </section>
+    
   );
 }
